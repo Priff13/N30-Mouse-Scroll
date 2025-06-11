@@ -50,7 +50,7 @@ The rest of the functions are simply to streamline the code.
 
 */
 global Iterations := 0
-global Threshold := 5
+global Threshold := 5 
 
 global Delay := 90
 global Delay_Fast := 30
@@ -67,12 +67,21 @@ ButtonsMap["XButton2"] := "{WheelDown}"
 ButtonsMap["!XButton1"] := "{WheelLeft}"
 ButtonsMap["!XButton2"] := "{WheelRight}"
 
+InstallKeybdHook ; if not included, alt key sometimes cuts out
+
 DetectExit(button) {
 	global Iterations, ButtonToggles
 	if (ButtonToggles[button] == 0) {
 		Iterations := 0
 		Exit
 	}
+    if (SubStr(button, 1, 1) == "!") {
+        button := SubStr(button, 2)
+        if (GetKeyState("Alt", "P") == 0) {
+            Iterations := 0 
+            Exit
+        }
+    }
 	if (GetKeyState(button, "P") == 0) {
 		Iterations := 0
 		Exit
@@ -101,6 +110,7 @@ ButtonPressed(button) {
         DoSleep()
     }
 }
+
 
 XButton2 up::ButtonReleased("XButton2")
 XButton2::ButtonPressed("XButton2")
